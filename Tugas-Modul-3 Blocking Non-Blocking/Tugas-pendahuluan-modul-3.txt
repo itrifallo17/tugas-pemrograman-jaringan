@@ -1,1 +1,60 @@
-1. 
+1. Jelaskan konsep utama dari model blocking dalampemrograman socket. Bagaimana progaram berperilaku saat menuggu operasi I/0 selesai? Berikan Contoh dalam penggunan java.
+Jawaban: Model blocking dalam pemrograman socket mengacu pada cara program berinteraksi dengan socket. Dalam model ini, operasi  I/O socket dapat menyebabkan program berhenti atau “memblok”sampai operasi tersebut selesai. Ini cocok untuk aplikasi dengan  jumlah koneks terbatas dan tidak membutuhkan skala besar atau responsivitas tinggi. Odel ini menawarkan dengan desain sederhana dan mudah dimegerti namun tidak efisien untuk menangani banyak koneksi secara bersamaan.
+Contoh dalam penggunaan java: blosking socket melibatkan  pemakaian ‘ServerSocket.accept()’ operasi pada pembacaan atau tulisan blocking.
+
+2. Apa perbedaan utama dalam model blocking dan nonblocking dalam program socket? Sebutkan keuntungan dan kekurangan masing-masing model.
+Jawaban: 
+Blocking Socket (Socket Block):
+a. Ciri utama : Saat operasi Input Output (I/O) dilakukan pada soket, program akan ‘terblokir’ atau  ‘menghentikan ‘ eksekusi hingga operasi I/O selesai.
+b. Keuntungan :  sederhana dan mudah diimplementasikan  karena operasi program menunggu  hingga data tersedia atau operasi selesai.
+C. Kelemahan : Jika ada banyak koneksi, dapat mengakibatkan penundaan karena program menunggu setiap operasi I/O selesai sebelum melanjutkan operasi I/O lagi.
+No-blocking Socket (Socket Non-Blok) :
+a. Ciri Utama : Program dapat melanjutkan eksekusi setelah memulai operasi Input Output (I/O) tanpa menunggu operasi selesai. Program kemudian dapat memerikasa kembali koneksi  atau data nantinya.
+b. Keuntungan : Efisien untuk menangani banyak koneksi  sekaligus tanpa menghentikan esekusi program utama.
+c. Kelemahan : Lebih kompleks dalam implementasinya karena memerlukan pemantauan  aktif terhadap koneksi dan data yang masuk keluar (I/O)
+
+3.Dalam konteks Java sebutkan setidaknya tiga operasi yang biasanya menggunakan model blockig socket, dan tiga operasi menggunakan non-blocking sang diterapkan untuk socket?
+Jawaban:
+Blocking Socket dalam operasinya meggunakan :
+1.  ‘socket = new ocket(SERVER_IP, SERVER_PORT)’:
+Program client akan terhenti disini saat membuat koneksi ke server. Ini adalah operasi blok sampai koneksi berhasl dibuat atau gagal.
+2. ‘writer.printIn()’:
+Setelah koneksi berhasil dibuat, program client akan memanggil ‘writer.printIn()’ untuk mengirimkan pesan ke server.
+Operasi ini bersifat blok, dan program client akam berhenti sampai data berhasil ditulis.
+3. ‘reader.readLine()’:
+Setelah mengirim pesan ke server, program client akan memanggil ‘reader.readLine()’ untuk menerima pesan balasan dari server.
+Operasi ini bersifat blok, dan program client akan berhasil sampai ada datayang tersedia untuk dibaca.
+Setelah pesan balasan berhasil dibaca,program client akan melanjutkan untuk menutup socket
+Non-Blocking Socket dalam operasinya menggunakan :
+1.  configureBlocking(false):
+Pada saat membuat channel (ServerChannel dan SocketChannel), kita mengonfigurasikan agar non-blockin dengan memanggil ‘configureBlocking(false)’.
+2. selector.select():
+Server menggunakan ‘Selector’ untuk memantau peristiwa I/O.  Metode ‘select()’ pada ‘Selector’ akan tetap non-blockig dan akan mengembalikan setiap kunci seleksi yang siap untuk dieksekusi.
+3. Operasi I/O non-blocking:
+Dalam server operasi baca dan tulis diimplementasikan secara non-blocking dengan menggunakan ‘ServerChannel.read()’ dan ‘SocketChannel.write()’. Operasi ini tidak akan memblokir program.
+
+4.Apakah situasi di mana kita akan memilih model blockinglebih cocok dari pada model non-blocking, dan sebaliknya? Berikan contoh aplikasi yang mungkin lebih baik menggunakan satu model daripada yang lain?
+Jawaban:
+keputusan untuk menggunakan model blocking atau non-blocking tergantung pada kebutuhan aplikasi. Aplikasi yang membutuhkan penanganan banyak koneksi secara bersamaan dan responsif terhadap peristiwa dapat memilih model non-blocking. Sebaliknya, untuk aplikasi yang lebih sederhana atau tidak memiliki jumlah koneksi yang besar, model blocking mugkin lebih sederhana untuk diimplementasikan.
+Contoh aplikasi :
+1. Aplikasi hat Real-Time :
+Blocking:  aplikasi chat yang sederhana dan tidakmemerlukan responsivitas tinggi mungkin menggunakan model blocking karena mudah diimplementasikan.
+Non-Blocking : aplikasi chat real time yang membutuhkan responsifitas tinggi dan menagani banyak pengguna secara bersamaan dapat memilih model non-blocking untuk menjaga efisiensi dan responsivitas.
+2. Server Web :
+Blocking : server web yang melayani sedikit pengguna pada suatu waktu dan tidak memerlukan kinerja tingi.
+Non-Blocking : server web yang harus menangani banyak permintaan secara bersamaan dan memberikan responsivitas tinggi kepada pengguna.
+3. Game Online Multiplayer:
+Blocking : Game sederhana dengan sedikit pemain  dan tidak memerlukan responsivitas tinggi.
+Non-Blocking: Game online multiplayer yang harus menangani banyak pemain secara bersamaan dan memberikan responsivitas tinggi terhadapperidtiwa dalam permainan.
+4. Aplikasi Keuangan :
+Blocking : Aplikasi keuangan sederhana yang membutuhkan koneksi ke server untuk memperbarui saldo atau mendapakan informasi transaksi.
+Non-Blocking : Aplikasi tranding saham online yang harus menghandle banyak transaksi secara berrsamaan dengan responsivitas tinggi.
+5. Sistem Monitoring Jaringan:
+Blocking : Sistem monitoring jaringan real time yang hanya perlu memeriksa koneksi jaringan pada inteval waktu tertentu.
+Non-Blocking : Sistem monitoring jaringan real time yang harus merespon perubahan dalam jaringan segera setelah terjadi.
+
+5.Bagaimana anda menghindari “busy waiting’ dalam implementasi model non-blocking? Jelaskan logika  mengenai peristiwa dan data masuk tanpa menggunakan loop yang berputar terus menerus.
+Jawaban:Untuk menghindari "busy waiting" dalam implementasi model non-blocking, dapat menggunakan pendekatan yang disebut "event-driven" atau "callback-based". Dalam konteks ini, sistem akan memberi tahu program ketika suatu peristiwa terjadi, dan program akan merespons secara asinkron melalui fungsi callback. Misalnya, dalam bahasa pemrograman tertentu seperti JavaScript dengan Node.js, dapat menggunakan mekanisme event emitter untuk menangani peristiwa. Begitu ada peristiwa yang terjadi, callback yang sesuai akan dijalankan tanpa memerlukan loop yang terus menerus.
+Logika di baliknya adalah bahwa program tetap dapat merespons terhadap peristiwa tanpa harus terus-menerus memeriksa status. Ini meningkatkan efisiensi karena program hanya aktif saat ada sesuatu yang perlu ditangani. Jadi, daripada memiliki loop yang terus berputar, program akan "tidur" atau berada dalam keadaan istirahat sampai ada peristiwa yang membangunkannya. Dengan cara ini, sumber daya tidak terbuang untuk mengecek status tanpa henti.
+
+
